@@ -39,18 +39,16 @@ struct DeadStoreEliminationPass : public FunctionPass {
           
           for(auto next = std::next(it); next != BB.end(); ++next) {
             Instruction &I = *next;
-            if(isa<LoadInst>(&I) || isa<StoreInst>(&I)) {
-                if(isa<LoadInst>(&I) && I.getOperand(0) == value) {
-                  //value is being used so its live
-                  isDead = false;
-                  break;
-                }
-                else if(isa<StoreInst>(&I) && I.getOperand(1) == value) {
-                  //value is being overwritten so its not live
-                  isDead = true;
-                  break;
-                }
-            }
+              if(isa<LoadInst>(&I) && I.getOperand(0) == value) {
+                //value is being used so its live
+                isDead = false;
+                break;
+              }
+              else if(isa<StoreInst>(&I) && I.getOperand(1) == value) {
+                //value is being overwritten so its not live
+                isDead = true;
+                break;
+              }
           }
           if(isDead) {
             instructionsToRemove.push_back(&I);
